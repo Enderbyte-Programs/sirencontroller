@@ -137,7 +137,7 @@ def main(stdscr):
     global LN_WAVE_FUNCTION
     signal.signal(signal.SIGINT, signal_handler)
     while True:
-        op = cursesplus.optionmenu(stdscr,["Quit","Settings","Alert","Wail","Fast Wail","Fire (high-low)","Alt Wail","Alt Fast Wail","Whoop"])
+        op = cursesplus.optionmenu(stdscr,["Quit","Settings","Alert","Wail","Fast Wail","Fire (high-low)","Alt Wail","Alt Fast Wail","Whoop","Chimes"])
         if op == 0:
             return
         elif op == 1:
@@ -275,6 +275,34 @@ def main(stdscr):
             cursesplus.displaymsg(stdscr,["Playing"],False)
             stream.write(parse_samples(fnarray))
         
+        elif op == 9:
+            cursesplus.displaymsg(stdscr,["Generating"],False)
+            fnarray = []
+            NOTE_FSHARP = 740
+            NOTE_GSHARP = 830.61
+            NOTE_ASHARP = 932.33
+            NOTE_CSHARP = 554.37
+            fnarray += alert(750,NOTE_FSHARP)
+            fnarray += alert(750,NOTE_ASHARP)
+            fnarray += alert(750,NOTE_GSHARP)
+            fnarray += alert(750,NOTE_CSHARP)
+            fnarray += silence(750)
+            fnarray += alert(750,NOTE_FSHARP)
+            fnarray += alert(750,NOTE_GSHARP)
+            fnarray += alert(750,NOTE_ASHARP)
+            fnarray += alert(750,NOTE_FSHARP)
+            fnarray += silence(750)
+            fnarray += alert(750,NOTE_ASHARP)
+            fnarray += alert(750,NOTE_FSHARP)
+            fnarray += alert(750,NOTE_GSHARP)
+            fnarray += alert(750,NOTE_CSHARP)
+            fnarray += silence(750)
+            fnarray += alert(750,NOTE_CSHARP)
+            fnarray += alert(750,NOTE_GSHARP)
+            fnarray += alert(750,NOTE_ASHARP)
+            fnarray += alert(750,NOTE_FSHARP)
+            fnarray += silence(750)
+            stream.write(parse_samples(fnarray))
 curses.wrapper(main)
 
 #Shutdown
