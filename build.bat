@@ -1,0 +1,1 @@
+pyinstaller --onefile --name sirencontroller main.py
