@@ -5,14 +5,30 @@ import math
 import array
 import signal
 import toml
+import os
 
 CONFIG_FILE = "config.toml"
+DEFAULT_CONFIG = """
+
+sample_rate = 44100
+volume = 0.3
+wail_cycle = 3
+port_ratio_n = 5
+port_ratio_d = 6
+low_freq = 100
+high_freq = 800
+winddown_time = 10000
+wavetype = 1
+
+
+"""
+if not os.path.isfile(CONFIG_FILE):
+    with open(CONFIG_FILE,"w+") as f:
+        f.write(DEFAULT_CONFIG)
 
 with open(CONFIG_FILE) as f:
     rd = f.read()
     APPDATA = toml.loads(rd)
-
-
 
 def sinewave(freq:float|int,index:int,hv=False) -> float:
     """Creates a singular sine wave point based on frequency"""
