@@ -1,0 +1,4 @@
+cursesplus
+windows-curses
+pyaudio
+toml
