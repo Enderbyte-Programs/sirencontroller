@@ -1,9 +1,9 @@
 sample_rate = 44100
 volume = 0.3
 wail_cycle = 3
-port_ratio_n = 5
-port_ratio_d = 6
-low_freq = 100
-high_freq = 800
+port_ratio_n = 7505999378950827
+port_ratio_d = 9007199254740992
+low_freq = 30
+high_freq = 645
 winddown_time = 10000
 wavetype = 1

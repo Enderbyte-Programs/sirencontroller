@@ -8,6 +8,10 @@ import toml
 import os
 
 CONFIG_FILE = "config.toml"
+
+MARK = 2
+PATCH = 1
+
 DEFAULT_CONFIG = """
 
 sample_rate = 44100
@@ -153,7 +157,7 @@ def main(stdscr):
     global LN_WAVE_FUNCTION
     signal.signal(signal.SIGINT, signal_handler)
     while True:
-        op = cursesplus.optionmenu(stdscr,["Quit","Settings","Alert","Wail","Fast Wail","Fire (high-low)","Alt Wail","Alt Fast Wail","Whoop","Chimes"])
+        op = cursesplus.coloured_option_menu(stdscr,["QUIT","SETTINGS","Alert","Wail","Fast Wail","Fire (high-low)","Alt Wail","Alt Fast Wail","Whoop","Chimes","Alert (Single)","Wail (Single)"],"Choose a signal",[["quit",cursesplus.RED],["settings",cursesplus.CYAN]],f"Enderbyte Programs Digital Siren Controller mk {MARK} p. {PATCH} (c) 2025 no rights reserved")
         if op == 0:
             return
         elif op == 1:
@@ -171,9 +175,10 @@ def main(stdscr):
                         LN_WAVE_FUNCTION = linsawtooth
                         WAVE_FUNCTION = sawtoothwave
         elif op == 2:
+            howlong = int(cursesplus.numericinput(stdscr,message="How long in seconds should the alert last?",allowdecimals=True,allownegatives=False,minimum=0.1)*1000)
             cursesplus.displaymsg(stdscr,["Playing"],False)
             #stream.stop_stream()
-            stream.write(parse_samples(gw_double(LOW_FREQUENCY,HIGH_FREQUENCY,3000) + alert_double(5000,HIGH_FREQUENCY) + gd_double(HIGH_FREQUENCY,LOW_FREQUENCY,WINDDOWN_TIME)))
+            stream.write(parse_samples(gw_double(LOW_FREQUENCY,HIGH_FREQUENCY,3000) + alert_double(howlong,HIGH_FREQUENCY) + gd_double(HIGH_FREQUENCY,LOW_FREQUENCY,WINDDOWN_TIME)))
             #stream.write()
             #stream.start_stream()
         elif op == 3:
@@ -292,7 +297,7 @@ def main(stdscr):
             stream.write(parse_samples(fnarray))
         
         elif op == 9:
-            cursesplus.displaymsg(stdscr,["Generating"],False)
+            cursesplus.displaymsg(stdscr,["Playing"],False)
             fnarray = []
             NOTE_FSHARP = 740
             NOTE_GSHARP = 830.61
@@ -318,6 +323,28 @@ def main(stdscr):
             fnarray += alert(750,NOTE_ASHARP)
             fnarray += alert(750,NOTE_FSHARP)
             fnarray += silence(750)
+            stream.write(parse_samples(fnarray))
+        elif op == 10:
+            howlong = int(cursesplus.numericinput(stdscr,message="How long in seconds should the alert last?",allowdecimals=True,allownegatives=False,minimum=0.1)*1000)
+            cursesplus.displaymsg(stdscr,["Playing"],False)
+            stream.write(parse_samples(
+                gen_windup(LOW_FREQUENCY,HIGH_FREQUENCY,3000)+
+                alert(howlong,HIGH_FREQUENCY,True)+
+                gen_winddown(HIGH_FREQUENCY,LOW_FREQUENCY,WINDDOWN_TIME)
+            ))
+        elif op == 11:
+            cursesplus.displaymsg(stdscr,["Playing"],False)
+            fnarray = gen_windup(LOW_FREQUENCY,HIGH_FREQUENCY,3000)
+            
+            for _ in range(WAIL_CYCLE):
+                fnarray += alert(2000,HIGH_FREQUENCY,True)
+                fnarray += gen_winddown(HIGH_FREQUENCY,200,4000)
+                
+                fnarray += gen_windup(200,HIGH_FREQUENCY,3000)
+
+            fnarray += alert(2000,HIGH_FREQUENCY,True)
+            fnarray += gen_winddown(HIGH_FREQUENCY,LOW_FREQUENCY,WINDDOWN_TIME)
+
             stream.write(parse_samples(fnarray))
 curses.wrapper(main)
 
