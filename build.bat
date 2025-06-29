@@ -1,1 +1,1 @@
-pyinstaller --onefile --name sirencontroller --icon=icon.ico main.py
+pyinstaller --onefile --name sirencontroller --icon=icon.ico --version-file=vf.txt main.py

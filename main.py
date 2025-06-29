@@ -157,7 +157,7 @@ def main(stdscr):
     global LN_WAVE_FUNCTION
     signal.signal(signal.SIGINT, signal_handler)
     while True:
-        op = cursesplus.coloured_option_menu(stdscr,["QUIT","SETTINGS","Alert","Wail","Fast Wail","Fire (high-low)","Alt Wail","Alt Fast Wail","Whoop","Chimes","Alert (Single)","Wail (Single)","Fast Wail (Single)","Dual Chimes"],"Choose a signal",[["quit",cursesplus.RED],["settings",cursesplus.CYAN]],f"Enderbyte Programs Digital Siren Controller mk {MARK} p. {PATCH} (c) 2025 no rights reserved")
+        op = cursesplus.coloured_option_menu(stdscr,["QUIT","SETTINGS","Dual Alert","Dual Wail","Dual Fast Wail","Alternate Alert","Alternate Wail","Alternate Fast Wail","Dual Whoop","Single Chimes","Single Alert","Single Wail","Single Fast Wail","Dual Chimes"],"Choose a signal",[["quit",cursesplus.RED],["settings",cursesplus.CYAN]],f"Enderbyte Programs Digital Siren Controller (EPDSC) mk. {MARK} p. {PATCH} (c) 2025 no rights reserved")
         if op == 0:
             return
         elif op == 1:
