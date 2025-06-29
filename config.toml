@@ -4,6 +4,6 @@ wail_cycle = 3
 port_ratio_n = 7505999378950827
 port_ratio_d = 9007199254740992
 low_freq = 30
-high_freq = 645
+high_freq = 1200
 winddown_time = 10000
 wavetype = 1

@@ -9,8 +9,8 @@ import os
 
 CONFIG_FILE = "config.toml"
 
-MARK = 2
-PATCH = 1
+MARK = 3
+PATCH = 0
 
 DEFAULT_CONFIG = """
 
@@ -157,7 +157,7 @@ def main(stdscr):
     global LN_WAVE_FUNCTION
     signal.signal(signal.SIGINT, signal_handler)
     while True:
-        op = cursesplus.coloured_option_menu(stdscr,["QUIT","SETTINGS","Alert","Wail","Fast Wail","Fire (high-low)","Alt Wail","Alt Fast Wail","Whoop","Chimes","Alert (Single)","Wail (Single)"],"Choose a signal",[["quit",cursesplus.RED],["settings",cursesplus.CYAN]],f"Enderbyte Programs Digital Siren Controller mk {MARK} p. {PATCH} (c) 2025 no rights reserved")
+        op = cursesplus.coloured_option_menu(stdscr,["QUIT","SETTINGS","Alert","Wail","Fast Wail","Fire (high-low)","Alt Wail","Alt Fast Wail","Whoop","Chimes","Alert (Single)","Wail (Single)","Fast Wail (Single)","Dual Chimes"],"Choose a signal",[["quit",cursesplus.RED],["settings",cursesplus.CYAN]],f"Enderbyte Programs Digital Siren Controller mk {MARK} p. {PATCH} (c) 2025 no rights reserved")
         if op == 0:
             return
         elif op == 1:
@@ -346,6 +346,74 @@ def main(stdscr):
             fnarray += gen_winddown(HIGH_FREQUENCY,LOW_FREQUENCY,WINDDOWN_TIME)
 
             stream.write(parse_samples(fnarray))
+        elif op == 12:
+            cursesplus.displaymsg(stdscr,["Playing"],False)
+            fnarray = gen_windup(LOW_FREQUENCY,HIGH_FREQUENCY,3000)
+            
+            for _ in range(WAIL_CYCLE):
+                fnarray += gen_winddown(HIGH_FREQUENCY,HIGH_FREQUENCY-200,1000)
+                
+                fnarray += gen_windup(HIGH_FREQUENCY-200,HIGH_FREQUENCY,1000)
+
+            fnarray += alert(2000,HIGH_FREQUENCY,True)
+            fnarray += gen_winddown(HIGH_FREQUENCY,LOW_FREQUENCY,WINDDOWN_TIME)
+
+            stream.write(parse_samples(fnarray))
+        elif op == 13:
+            cursesplus.displaymsg(stdscr,["Playing"],False)
+            tape1 = []
+            tape2 = []
+
+            tape1.extend(alert(750,622.25))
+            tape1.extend(alert(750,783.99))
+            tape1.extend(alert(750,698.46))
+            tape1.extend(alert(750,466.16))
+            tape1.extend(silence(750))
+
+            tape1.extend(alert(750,622.25))
+            tape1.extend(alert(750,698.46))
+            tape1.extend(alert(750,783.99))
+            tape1.extend(alert(750,622.25))
+            tape1.extend(silence(750))
+
+            tape1.extend(alert(750,783.99))
+            tape1.extend(alert(750,622.25))
+            tape1.extend(alert(750,689.46))
+            tape1.extend(alert(750,466.16))
+            tape1.extend(silence(750))
+
+            tape1.extend(alert(750,466.16))
+            tape1.extend(alert(750,689.46))
+            tape1.extend(alert(750,783.99))
+            tape1.extend(alert(750,622.25))
+            tape1.extend(silence(750))
+
+            tape2.extend(alert(750,392))
+            tape2.extend(alert(750,622.25))
+            tape2.extend(alert(750,466.16))
+            tape2.extend(alert(750,392))
+            tape2.extend(silence(750))
+
+            tape2.extend(alert(750,392))
+            tape2.extend(alert(750,466.16))
+            tape2.extend(alert(750,622.25))
+            tape2.extend(alert(750,392))
+            tape2.extend(silence(750))
+            
+            tape2.extend(alert(750,466.16))
+            tape2.extend(alert(750,392))
+            tape2.extend(alert(750,415.3))
+            tape2.extend(alert(750,293.66))
+            tape2.extend(silence(750))
+
+            tape2.extend(alert(750,392))
+            tape2.extend(alert(750,466.16))
+            tape2.extend(alert(750,622.25))
+            tape2.extend(alert(750,392))
+            tape2.extend(silence(750))
+
+            stream.write(parse_samples([(tape1[i] + tape2[i]) / 2 for i in range(len(tape1))]))
+
 curses.wrapper(main)
 
 #Shutdown
